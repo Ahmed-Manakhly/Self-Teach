@@ -7,6 +7,7 @@ window.addEventListener('scroll', () => {
 
 
 
+
 //to open the answers
 
 let ferq = document.querySelectorAll(".f__icon");
@@ -59,3 +60,140 @@ up.onclick = function() {
         behavior: "smooth",
     });
 };
+
+// Sidebar
+
+const container = document.querySelector(".courses__container-");
+const prev = document.querySelector("#prev");
+const next = document.querySelector("#next");
+let x = 0;
+let timer;
+
+prev.addEventListener('click', () => {
+    x = x + 45;
+    clearTimeout(timer)
+    updategallery();
+
+});
+
+next.addEventListener('click', () => {
+    x = x - 45;
+    clearTimeout(timer)
+    updategallery();
+});
+
+function updategallery() {
+    container.style.transform = `perspective(1000px) rotateY(${x}deg)`
+    timer = setTimeout(() => {
+        x = x - 45;
+        updategallery()
+    }, 3000)
+}
+
+updategallery()
+
+// ============================= c-sat section
+const ratingCon = document.querySelector('.rating__container');
+const stars = document.querySelectorAll('.fa-star');
+const faces = document.querySelectorAll('.fa-3x');
+const root = document.querySelector(':root')
+
+stars.forEach((str, index) => {
+    str.addEventListener('click', () => {
+        root.style.setProperty('--face-changing-order', index);
+        updateRating(index);
+    });
+});
+
+function updateRating(index) {
+    stars.forEach((str, i) => {
+        if (i <= index) {
+            str.classList.add('active');
+        } else {
+            str.classList.remove('active');
+        };
+    });
+};
+//===================================================slider
+
+var sliderItems = Array.from(document.querySelectorAll('.slider__container__t .testimonials'));
+var itemsLength = sliderItems.length;
+var currentIndex = 1;
+var slidCounter = document.querySelector('.slider__container__t #slider__number');
+//buttons
+const prevButton = document.querySelector('.slider__control__t #prev');
+const nextButton = document.querySelector('.slider__control__t #next');
+
+//functions of buttons 
+prevButton.onclick = prevSlid;
+nextButton.onclick = nextSlid;
+
+
+function nextSlid() {
+    if (nextButton.classList.contains('disabled')) {
+        return false;
+    } else {
+        currentIndex++;
+        theChecker();
+    }
+};
+
+function prevSlid() {
+    if (prevButton.classList.contains('disabled')) {
+        return false;
+    } else {
+        currentIndex--;
+        theChecker();
+    }
+};
+//creat pagination
+var pagination = document.createElement('ul');
+pagination.setAttribute('id', 'pagination-ul');
+//creat pagination ele's based on sliderItems
+for (let i = 1; i <= itemsLength; i++) {
+    let paginationLi = document.createElement('li');
+    paginationLi.setAttribute('data-index', i);
+    paginationLi.appendChild(document.createTextNode(i));
+    pagination.appendChild(paginationLi);
+};
+document.getElementById('indicators').appendChild(pagination);
+const paginationul = document.getElementById('pagination-ul');
+let paginationlis = Array.from(document.querySelectorAll('#pagination-ul li'));
+
+for (let i = 0; i < paginationlis.length; i++) {
+    paginationlis[i].onclick = function() {
+        currentIndex = parseInt(this.getAttribute('data-index'));
+        theChecker();
+    }
+}
+theChecker();
+
+function theChecker() {
+    removeActiveS()
+    slidCounter.textContent = 'Slide# ' + (currentIndex) + ' of ' + (itemsLength);
+    sliderItems[currentIndex - 1].classList.add('active');
+    paginationul.children[currentIndex - 1].classList.add('active');
+    if (currentIndex === 1) {
+        prevButton.classList.add('disabled');
+    } else {
+        prevButton.classList.remove('disabled');
+    }
+
+    if (currentIndex === itemsLength) {
+        nextButton.classList.add('disabled');
+    } else {
+        nextButton.classList.remove('disabled');
+    }
+
+};
+
+function removeActiveS() {
+    sliderItems.forEach((ele) => {
+        ele.classList.remove('active');
+
+    })
+
+    paginationlis.forEach((item) => {
+        item.classList.remove('active');
+    })
+}
